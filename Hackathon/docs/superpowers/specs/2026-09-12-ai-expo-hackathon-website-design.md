@@ -49,8 +49,8 @@ particles, canvas-painted textures, QR codes, favicons:
 |----------|-----------|------|
 | `yellow` | `#FDD013` | **ACTION** — primary CTAs, coins, important numbers, progress, interactive targets, rails, signs |
 | `cyan`   | `#6AEEFD` | **INTERACTION** — hover, active nav, selected domain, focus rings, motion trails, particles |
-| `navy`   | `#354093` | **DEPTH** — dominant environment colour: backgrounds, tunnels, trains, structure, shadows, fog |
-| `pale`   | `#C6FEFE` | **LIGHT SURFACES** — kiosk screens, cards, forms, information panels, station signage |
+| `navy`   | `#354093` | **DEPTH** — structure, trains, pillars, tunnel interiors, panels, text, shadows. **Never the page or scene background.** |
+| `pale`   | `#C6FEFE` | **LIGHT SURFACES + BACKGROUND** — the page background, scene background/sky, fog, walls, floors, kiosk screens, cards, forms, signage |
 | `orange` | `#F7BE76` | **SECONDARY ENERGY** (sparingly) — warm lighting, secondary buttons, subway signs, transitions |
 | `red`    | `#E31902` | **COMPETITION / ALERT** (strategically) — deadlines, LIVE, rank drop, warnings, final round |
 | `white`  | `#FFFFFF` | Only for text readability or very small UI details |
@@ -60,6 +60,11 @@ generic-blue gradients, any auto-generated accent. Gradients are allowed only be
 colours (e.g. `navy → cyan`, `yellow → orange`, `navy → pale`) and are used rarely; prefer large flat
 surfaces + lighting + depth. Shading produced by lights is acceptable — it is derived from the palette —
 but shaded sides must fall toward navy, never black (see §5.2).
+
+**Background rule (user decision):** the world is a *bright* station. The `<body>`, the three.js
+`scene.background`, the fog and the large wall/floor surfaces are `pale` — never `navy`. Navy provides
+contrast and depth as objects (trains, pillars, beams, kiosk body, tunnel interiors, text, hard shadows),
+so the page reads light with navy structure on top, not dark with light accents.
 
 ### 2.2 Visual identity
 
@@ -326,11 +331,17 @@ returning shared, cached `MeshToonMaterial` (default) / `MeshBasicMaterial` inst
 never construct materials with arbitrary colours. Toon shading uses a 3-step gradient map.
 
 Lighting rig (`world/lights.tsx`):
-- `hemisphereLight` sky = `pale`, ground = `navy`, intensity ≈ 0.9 — shaded sides fall toward navy.
-- `directionalLight` key, colour `orange`, intensity ≈ 1.2, casting soft shadows on `high` tier only.
+- `scene.background = pale` and `<fog attach="fog" color={pale} near far />` — distance fades into
+  bright haze, never darkness. The `<body>` behind the canvas is also `pale`.
+- `hemisphereLight` sky = `pale`, ground = `navy`, intensity ≈ 1.1 — lit sides stay bright, shaded
+  sides fall toward navy.
+- `directionalLight` key, colour `orange`, intensity ≈ 1.2, casting soft shadows on `high` tier only;
+  shadow colour is navy at ≈ 35 % opacity (`ShadowMaterial` on the floor), so shadows read as depth
+  without darkening the world.
 - Zone accent lights: point/spot lights coloured `cyan` or `yellow` near doors, kiosk and trains;
   they are the targets of `world.pulse` events.
-- `<fog attach="fog" color={navy} near far />` and `scene.background = navy`.
+- Large surfaces (walls, platform tops, floor) use `pale`; structure (pillars, beams, trains, kiosk
+  body, tunnel interiors) uses `navy`. This keeps the frame light with strong navy silhouettes.
 - No post-processing, no bloom.
 
 ### 5.3 Guard
@@ -363,8 +374,9 @@ Scrolling is locked during playback.
 
 ### 6.2 Sections
 
-1. **HERO** — `RUN THE HACKATHON.` (Bungee, ~clamp(3rem, 9vw, 8rem), pale text with a hard navy offset
-   shadow), subhead `BUILD. COMPETE. CREATE YOUR OWN RUN.`, event chip `AI EXPO · 14–15 NOV 2026 · Innovation Hall`.
+1. **HERO** — `RUN THE HACKATHON.` (Bungee, ~clamp(3rem, 9vw, 8rem), navy text with a hard yellow
+   offset shadow — reads on the pale background), subhead `BUILD. COMPETE. CREATE YOUR OWN RUN.` in navy,
+   event chip `AI EXPO · 14–15 NOV 2026 · Innovation Hall` (navy chip, pale text).
    CTAs: `▶ START RUNNING` (yellow primary) and `SIGN IN` (pale secondary).
    - **START RUNNING** starts *the run*: Lenis scrolls the page to the bottom over ≈ 9 s with an
      ease-in-out; coins along the route are collected as they pass; any wheel/touch/keyboard scroll
@@ -571,8 +583,9 @@ tooltip.
 All geometry from primitives (`box`, `cylinder`, `plane`, `extrude`, `torus`), instanced where
 repeated. Components in `src/world/props/`:
 
-- `Rails`, `Ties` — yellow rails, navy ties, instanced along a zone length.
-- `Platform` — navy slab with a yellow safety edge line and pale tactile strip.
+- `Rails`, `Ties` — yellow rails, navy ties, instanced along a zone length; the track bed is `pale`.
+- `Platform` — pale slab with a yellow safety edge line, navy tactile strip and a navy front face.
+- `Wall` — pale wall panels with navy beams and orange trim; graffiti walls are painted onto them.
 - `Pillar` — navy column with an orange band and a pale number plate.
 - `GraffitiWall` — a plane whose `CanvasTexture` is painted at runtime (`lib/graffiti.ts`): big Bungee
   words, arrows, stars, splats and drips in palette colours; supports a `reveal ∈ [0,1]` clip for the
@@ -635,8 +648,8 @@ within a session (avoids flicker). Budget: < 150 draw calls on `high`, < 80 on `
 
 ### 10.4 Fallbacks
 
-- WebGL unavailable or canvas creation throws → `<WorldCanvas>` renders nothing; a flat navy
-  background with a subtle pale-line pattern stands in; all DOM flows keep working.
+- WebGL unavailable or canvas creation throws → `<WorldCanvas>` renders nothing; the flat pale
+  body background with a subtle navy track-line pattern stands in; all DOM flows keep working.
 - `localStorage` throws → in-memory store for the session.
 
 ---
@@ -739,3 +752,7 @@ Each phase ends with a runnable app, passing tests, and a visual check in the br
 - Hero **START RUNNING** performs the auto-run through the line; **CREATE YOUR RUNNER** at Check-In
   starts registration.
 - Future Tech domain is **orange** (palette overrides the brief's green/blue).
+- **Background is light:** `pale` (`#C6FEFE`) is the page, scene, fog and large-surface colour.
+  `navy` (`#354093`) is never used as a page or scene background — only for structure, trains,
+  panels, text and shadows. (User decision on spec review, overriding the brief's "navy as dominant
+  background".)
