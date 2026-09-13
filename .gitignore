@@ -1,1 +1,32 @@
-node_modules
+﻿# Dependencies & System
+node_modules/
+.claude/
+.superpowers/
+.vercel/
+dist/
+
+# Other local projects (preserved locally on disk, excluded from AI-EXPO-Hackathon)
+/Aakash-Enterprises/
+/ai-website-cloner-template/
+/Aquacare/
+/ASL/
+/Citizenapp/
+/docs/
+/frontend/
+/OMNI/
+/ONJI/
+/PacPay1/
+/Portfolio/
+/Quants/
+/SIh/
+/Squaredec/
+/website/
+/workspace220106/
+
+# Non-Hackathon loose files
+/22-Day-MERN-AI-Learning-Plan.*
+/Awaken-IQ*
+/convert_notebook.py
+/package.json
+/package-lock.json
+/revised_tutorial.md

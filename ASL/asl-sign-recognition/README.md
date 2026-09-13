@@ -1,1 +1,0 @@
-# asl-sign-recognition
