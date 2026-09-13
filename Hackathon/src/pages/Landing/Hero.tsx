@@ -6,6 +6,7 @@ import { prefersReducedMotion } from '@/hooks/useReducedMotion';
 import { useWorld } from '@/store/world';
 import { PALETTE } from '@/theme/palette';
 import { ArcadeButton } from '@/ui/ArcadeButton';
+import { replayIntro } from './SkipIntro';
 
 const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
@@ -47,26 +48,54 @@ export function Hero() {
 
   return (
     <motion.div
-      className="pointer-auto"
-      initial={{ opacity: 0, y: 60, scale: 0.94 }}
-      animate={introRunning ? { opacity: 0, y: 60, scale: 0.94 } : { opacity: 1, y: 0, scale: 1 }}
-      transition={{ type: 'spring', stiffness: 260, damping: 22, delay: introRunning ? 0 : 0.1 }}
+      className="pointer-auto relative"
+      initial={{ opacity: 0, y: 70, scale: 0.92 }}
+      animate={introRunning ? { opacity: 0, y: 70, scale: 0.92 } : { opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 280, damping: 18, delay: introRunning ? 0 : 0.08 }}
     >
-      <p className="mb-4 inline-block border-[3px] border-navy bg-navy px-3 py-1 font-display text-xs tracking-wider text-pale shadow-bevel-yellow">
-        {`${EVENT.name} · ${formatEventDates()} · ${EVENT.venue}`}
-      </p>
-      <h1
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <p className="inline-block border-[3px] border-navy bg-navy px-3 py-1 font-display text-xs tracking-wider text-pale shadow-bevel-yellow">
+          {`${EVENT.name} · ${formatEventDates()} · ${EVENT.venue}`}
+        </p>
+        <span className="border-[3px] border-navy bg-yellow px-2.5 py-1 font-display text-[11px] tracking-wider text-navy shadow-bevel-sm">
+          SUBWAY SURFERS EDITION
+        </span>
+      </div>
+
+      <motion.h1
         className="font-display text-[clamp(2.6rem,8.5vw,7.5rem)] leading-[0.92] text-navy"
         style={{ textShadow: `0.06em 0.06em 0 ${PALETTE.yellow}` }}
+        initial={{ scale: 1.15, opacity: 0 }}
+        animate={introRunning ? { scale: 1.15, opacity: 0 } : { scale: 1, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 320, damping: 20, delay: 0.12 }}
       >
         RUN THE HACKATHON.
-      </h1>
-      <p className="mt-4 font-display text-base text-navy md:text-2xl">BUILD. COMPETE. CREATE YOUR OWN RUN.</p>
-      <div className="mt-8 flex flex-wrap gap-4">
-        <ArcadeButton size="lg" onClick={onStart} aria-pressed={running}>▶ START RUNNING</ArcadeButton>
-        <ArcadeButton size="lg" variant="secondary" to="/signin">SIGN IN</ArcadeButton>
+      </motion.h1>
+
+      <p className="mt-4 font-display text-base text-navy md:text-2xl">
+        36H SPRINT. BUILD. COMPETE. GRIND THE RAILS.
+      </p>
+
+      <div className="mt-8 flex flex-wrap items-center gap-4">
+        <ArcadeButton size="lg" onClick={onStart} aria-pressed={running}>
+          ▶ START RUNNING
+        </ArcadeButton>
+        <ArcadeButton size="lg" variant="secondary" to="/signin">
+          SIGN IN
+        </ArcadeButton>
+        <button
+          type="button"
+          onClick={replayIntro}
+          className="pointer-auto border-[3px] border-navy bg-pale px-4 py-3 font-display text-xs tracking-wider text-navy shadow-bevel-sm transition hover:bg-cyan active:translate-x-0.5 active:translate-y-0.5"
+          title="Replay the 3D train arrival intro"
+        >
+          🎬 REPLAY TRAIN RUN
+        </button>
       </div>
-      <p className="mt-8 font-ui text-sm font-bold tracking-widest text-navy">{running ? 'RUNNING THE LINE — SCROLL TO TAKE OVER' : 'SCROLL TO RIDE THE LINE ↓'}</p>
+
+      <p className="mt-8 font-ui text-sm font-bold tracking-widest text-navy">
+        {running ? 'RUNNING THE LINE — SCROLL TO TAKE OVER' : 'SCROLL TO RIDE THE LINE ↓'}
+      </p>
     </motion.div>
   );
 }

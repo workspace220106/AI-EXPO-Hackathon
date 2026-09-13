@@ -4,6 +4,7 @@ import { Group, PerspectiveCamera } from 'three';
 import { prefersReducedMotion } from '@/hooks/useReducedMotion';
 import { introAt } from '@/lib/intro';
 import { useWorld } from '@/store/world';
+import { sfx } from '@/lib/sound';
 import { mat } from '../materials';
 import { Train } from '../props/Train';
 import { introBus } from './introBus';
@@ -38,21 +39,37 @@ function TrailFollower({ target }: { target: RefObject<Group | null> }) {
 export function Intro() {
   const camera = useThree((s) => s.camera);
   const train = useRef<Group>(null);
+  const introRunning = useWorld((s) => s.introRunning);
   const [playing, setPlaying] = useState(false);
+  const whooshPlayed = useRef(false);
 
   useEffect(() => {
-    if (!shouldPlayIntro()) { introBus.active = false; introBus.reveal = 1; return; }
-    const w = useWorld.getState();
-    introBus.active = true; introBus.t = 0; introBus.reveal = 0; introBus.trainZ = 30;
-    w.setIntroRunning(true);
-    w.lockScroll(true);
-    setPlaying(true);
-    return () => { introBus.active = false; w.setIntroRunning(false); w.lockScroll(false); };
-  }, []);
+    if (!introRunning) {
+      if (shouldPlayIntro()) {
+        const w = useWorld.getState();
+        introBus.active = true; introBus.t = 0; introBus.reveal = 0; introBus.trainZ = 30;
+        w.setIntroRunning(true);
+        w.lockScroll(true);
+        whooshPlayed.current = false;
+        setPlaying(true);
+      } else {
+        introBus.active = false; introBus.reveal = 1; setPlaying(false);
+      }
+    } else {
+      setPlaying(true);
+      whooshPlayed.current = false;
+    }
+  }, [introRunning]);
 
   useFrame((_, delta) => {
     if (!introBus.active) return;
     introBus.t += Math.min(delta, 0.05);
+
+    if (introBus.t > 0.15 && !whooshPlayed.current) {
+      whooshPlayed.current = true;
+      sfx.playTrainWhoosh();
+    }
+
     const f = introAt(introBus.t);
     introBus.trainZ = f.trainZ;
     introBus.reveal = f.reveal;
@@ -67,6 +84,8 @@ export function Intro() {
     if (f.done) {
       introBus.active = false;
       introBus.reveal = 1;
+      sfx.playBoom();
+      sfx.playSubwayChime();
       const w = useWorld.getState();
       w.setIntroRunning(false);
       w.setIntroPlayed(true);

@@ -1,7 +1,11 @@
+import os
+import sys
+# Add the api directory to the module search path for Vercel Serverless
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from chatbot import get_bot_response
-import os
 from dotenv import load_dotenv
 from spellchecker import SpellChecker
 

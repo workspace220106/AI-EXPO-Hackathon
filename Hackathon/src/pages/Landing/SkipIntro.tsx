@@ -5,6 +5,18 @@ import { introBus } from '@/world/cinematic/introBus';
 
 export function skipIntro() { if (introBus.active) introBus.t = INTRO_DURATION; }
 
+export function replayIntro() {
+  introBus.active = true;
+  introBus.t = 0;
+  introBus.reveal = 0;
+  introBus.trainZ = 30;
+  const w = useWorld.getState();
+  w.setIntroPlayed(false);
+  w.setIntroRunning(true);
+  w.lockScroll(true);
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
 export function SkipIntro() {
   const running = useWorld((s) => s.introRunning);
   useEffect(() => {
