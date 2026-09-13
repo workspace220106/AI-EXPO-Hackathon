@@ -14,7 +14,7 @@ function shouldPlayIntro(): boolean {
   if (window.location.pathname !== '/') return false;
   if (new URLSearchParams(window.location.search).has('nointro')) return false;
   if (prefersReducedMotion()) return false;
-  return !useWorld.getState().introPlayed;
+  return true;
 }
 
 /** Cyan speed streaks trailing the last car (the train is turned to face −Z, so its tail is on +Z). */
@@ -39,27 +39,29 @@ function TrailFollower({ target }: { target: RefObject<Group | null> }) {
 export function Intro() {
   const camera = useThree((s) => s.camera);
   const train = useRef<Group>(null);
-  const introRunning = useWorld((s) => s.introRunning);
   const [playing, setPlaying] = useState(false);
   const whooshPlayed = useRef(false);
 
   useEffect(() => {
-    if (!introRunning) {
-      if (shouldPlayIntro()) {
-        const w = useWorld.getState();
-        introBus.active = true; introBus.t = 0; introBus.reveal = 0; introBus.trainZ = 30;
-        w.setIntroRunning(true);
-        w.lockScroll(true);
-        whooshPlayed.current = false;
-        setPlaying(true);
-      } else {
-        introBus.active = false; introBus.reveal = 1; setPlaying(false);
-      }
-    } else {
-      setPlaying(true);
+    if (shouldPlayIntro()) {
+      const w = useWorld.getState();
+      introBus.active = true;
+      introBus.t = 0;
+      introBus.reveal = 0;
+      introBus.trainZ = 30;
+      w.setIntroRunning(true);
+      w.lockScroll(true);
       whooshPlayed.current = false;
+      setPlaying(true);
+    } else {
+      introBus.active = false;
+      introBus.reveal = 1;
+      const w = useWorld.getState();
+      w.setIntroRunning(false);
+      w.lockScroll(false);
+      setPlaying(false);
     }
-  }, [introRunning]);
+  }, []);
 
   useFrame((_, delta) => {
     if (!introBus.active) return;

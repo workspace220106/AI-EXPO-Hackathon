@@ -58,9 +58,6 @@ interface WorldState {
   setDrawCalls(n: number): void;
 }
 
-const INTRO_KEY = 'aiexpo.introPlayed';
-const readIntro = () => { try { return sessionStorage.getItem(INTRO_KEY) === '1'; } catch { return false; } };
-
 let eventSeq = 0;
 const EVENT_TTL = 3000;
 
@@ -69,8 +66,8 @@ export const useWorld = create<WorldState>()((set) => ({
   scrollT: 0,
   scrollLocked: false,
   qualityTier: 'high',
-  introPlayed: readIntro(),
-  introRunning: false,
+  introPlayed: false,
+  introRunning: true,
   hovered: null,
   events: [],
   doorMode: 'showcase',
@@ -86,10 +83,7 @@ export const useWorld = create<WorldState>()((set) => ({
   setScrollT: (t) => set({ scrollT: Math.min(1, Math.max(0, t)) }),
   lockScroll: (scrollLocked) => set({ scrollLocked }),
   setQuality: (qualityTier) => set({ qualityTier }),
-  setIntroPlayed(v) {
-    try { sessionStorage.setItem(INTRO_KEY, v ? '1' : '0'); } catch { /* memory only */ }
-    set({ introPlayed: v });
-  },
+  setIntroPlayed: (introPlayed) => set({ introPlayed }),
   setIntroRunning: (introRunning) => set({ introRunning }),
   setHovered: (hovered) => set({ hovered }),
   emit: (e) => set((s) => ({ events: [...s.events, { ...e, id: ++eventSeq, at: Date.now() }] })),

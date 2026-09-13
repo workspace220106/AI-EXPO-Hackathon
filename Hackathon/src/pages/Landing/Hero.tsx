@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { EVENT, formatEventDates } from '@/config/event';
 import { getLenis, scrollToId } from '@/hooks/useLenis';
 import { prefersReducedMotion } from '@/hooks/useReducedMotion';
 import { useWorld } from '@/store/world';
 import { PALETTE } from '@/theme/palette';
 import { ArcadeButton } from '@/ui/ArcadeButton';
-import { replayIntro } from './SkipIntro';
 
 const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
@@ -53,11 +51,8 @@ export function Hero() {
       animate={introRunning ? { opacity: 0, y: 70, scale: 0.92 } : { opacity: 1, y: 0, scale: 1 }}
       transition={{ type: 'spring', stiffness: 280, damping: 18, delay: introRunning ? 0 : 0.08 }}
     >
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <p className="inline-block border-[3px] border-navy bg-navy px-3 py-1 font-display text-xs tracking-wider text-pale shadow-bevel-yellow">
-          {`${EVENT.name} · ${formatEventDates()} · ${EVENT.venue}`}
-        </p>
-        <span className="border-[3px] border-navy bg-yellow px-2.5 py-1 font-display text-[11px] tracking-wider text-navy shadow-bevel-sm">
+      <div className="mb-4">
+        <span className="inline-block border-[3px] border-navy bg-yellow px-3 py-1 font-display text-xs tracking-wider text-navy shadow-bevel-sm">
           SUBWAY SURFERS EDITION
         </span>
       </div>
@@ -83,14 +78,6 @@ export function Hero() {
         <ArcadeButton size="lg" variant="secondary" to="/signin">
           SIGN IN
         </ArcadeButton>
-        <button
-          type="button"
-          onClick={replayIntro}
-          className="pointer-auto border-[3px] border-navy bg-pale px-4 py-3 font-display text-xs tracking-wider text-navy shadow-bevel-sm transition hover:bg-cyan active:translate-x-0.5 active:translate-y-0.5"
-          title="Replay the 3D train arrival intro"
-        >
-          🎬 REPLAY TRAIN RUN
-        </button>
       </div>
 
       <p className="mt-8 font-ui text-sm font-bold tracking-widest text-navy">
