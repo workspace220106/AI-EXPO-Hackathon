@@ -90,7 +90,10 @@ function styleObjectStrings(text) {
 
 export function findViolations(text, filename = '') {
   const out = [];
-  for (const m of text.match(HEX) ?? []) if (!ALLOWED.has(m.toLowerCase())) out.push(m);
+  for (const m of text.match(HEX) ?? []) {
+    if (/^#\d{4}$/.test(m)) continue; // runner ids are "#" + four decimal digits (#0247), never a colour
+    if (!ALLOWED.has(m.toLowerCase())) out.push(m);
+  }
   for (const m of text.match(FUNC) ?? []) out.push(m);
 
   const lower = filename.toLowerCase();

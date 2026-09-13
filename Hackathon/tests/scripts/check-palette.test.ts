@@ -21,4 +21,9 @@ describe('check-palette', () => {
     expect(findViolations("<div style={{ color: 'tomato', background: PALETTE.navy }} />", 'x.tsx')).toEqual(['tomato']);
     expect(findViolations("const a = { outfit: { color: 'red' }, hairColor: 'navy' }; mat('white');", 'x.ts')).toEqual([]);
   });
+  it('does not mistake runner ids (# + four digits) for colours', () => {
+    expect(findViolations("id: '#0247', leaderId: '#0100'", 'x.ts')).toEqual([]);
+    expect(findViolations('a { color: #0247 }', 'x.css')).toEqual([]);
+    expect(findViolations('a { color: #0247a }', 'x.css')).toEqual(['#0247a']);
+  });
 });
