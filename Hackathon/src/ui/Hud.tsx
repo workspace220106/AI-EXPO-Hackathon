@@ -5,6 +5,7 @@ import { useSession } from '@/store/session';
 import { useWorld } from '@/store/world';
 import { PALETTE } from '@/theme/palette';
 import { MobileNav, type NavItem } from './MobileNav';
+import { MusicPlayer } from './MusicPlayer';
 import { Pill } from './Pill';
 
 const SECTIONS: { label: string; id: string }[] = [
@@ -34,6 +35,7 @@ export function Hud() {
 
         <nav aria-label="Primary" className="hidden items-center gap-2 md:flex">
           {sectionItems.map((it) => <Pill key={it.label} href={it.href}>{it.label}</Pill>)}
+          <MusicPlayer />
           {user ? (
             <>
               <Pill to="/station" tone="cyan">STATION</Pill>
@@ -49,6 +51,7 @@ export function Hud() {
         </nav>
 
         <div className="flex items-center gap-2 md:hidden">
+          <MusicPlayer />
           {user && <span id="hud-coins-mobile" className="rounded-full border-2 border-navy bg-yellow px-2 font-display text-xs text-navy">{coins}</span>}
           <button type="button" aria-label="Open menu" aria-expanded={open} onClick={() => setOpen(true)}
             className="pointer-auto border-4 border-navy bg-yellow px-3 py-2 font-display text-navy shadow-bevel">
