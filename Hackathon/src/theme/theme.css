@@ -1,0 +1,44 @@
+@import "tailwindcss";
+@import "@fontsource/bungee/400.css";
+@import "@fontsource/rubik/400.css";
+@import "@fontsource/rubik/500.css";
+@import "@fontsource/rubik/700.css";
+
+@theme {
+  --color-*: initial;
+  --color-yellow: #FDD013;
+  --color-cyan: #6AEEFD;
+  --color-navy: #354093;
+  --color-pale: #C6FEFE;
+  --color-orange: #F7BE76;
+  --color-red: #E31902;
+  --color-white: #FFFFFF;
+
+  --font-display: "Bungee", system-ui, sans-serif;
+  --font-ui: "Rubik", system-ui, sans-serif;
+
+  --shadow-bevel: 6px 6px 0 0 #354093;
+  --shadow-bevel-sm: 3px 3px 0 0 #354093;
+  --shadow-bevel-yellow: 6px 6px 0 0 #FDD013;
+}
+
+@layer base {
+  html { background: #C6FEFE; }
+  body {
+    margin: 0;
+    background: #C6FEFE;
+    color: #354093;
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  #root { min-height: 100dvh; }
+  ::selection { background: #FDD013; color: #354093; }
+  :focus-visible { outline: 3px solid #6AEEFD; outline-offset: 2px; }
+}
+
+@layer utilities {
+  .text-stroke-navy { -webkit-text-stroke: 2px #354093; }
+  .pointer-none { pointer-events: none; }
+  .pointer-auto { pointer-events: auto; }
+}
