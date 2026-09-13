@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+// @ts-expect-error untyped ESM script
 import { findViolations } from '../../scripts/check-palette.mjs';
 
 describe('check-palette', () => {

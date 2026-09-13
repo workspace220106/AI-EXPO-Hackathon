@@ -20,6 +20,8 @@
   --shadow-bevel: 6px 6px 0 0 #354093;
   --shadow-bevel-sm: 3px 3px 0 0 #354093;
   --shadow-bevel-yellow: 6px 6px 0 0 #FDD013;
+  --shadow-bevel-lg: 9px 9px 0 0 #354093;
+  --shadow-bevel-cyan: 6px 6px 0 0 #6AEEFD;
 }
 
 @layer base {
@@ -41,4 +43,13 @@
   .text-stroke-navy { -webkit-text-stroke: 2px #354093; }
   .pointer-none { pointer-events: none; }
   .pointer-auto { pointer-events: auto; }
+  .track-lines {
+    background-image: repeating-linear-gradient(90deg, #354093 0 2px, transparent 2px 48px);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
 }
